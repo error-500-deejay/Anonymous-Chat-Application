@@ -103,7 +103,7 @@ nodemon
 
 Want to contribute? Great!
 Just Fork it 
-Else get in contact with me at [E-mail](gadakh.dhananjay3@gmail.com)
+Else get in contact with me at [My Mail](mailto:gadakh.dhananjay3@gmail.com?subject=Contact%20for%20Contirbution%20to%20Chat%20app%20on%20Github)
 
 ### Give it a 🌟 to show your support 😃😃
 ### And of course, feel free for any kind of contribution.
