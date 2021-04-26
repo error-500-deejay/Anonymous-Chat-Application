@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0 auto;
+        max-width: 800px;
+        padding: 0 20px;
+      }
+
+      .container {
+        border: 2px solid #dedede;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      .darker {
+        border-color: #ccc;
+        background-color: #ddd;
+      }
+
+      .container::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+
+      .container img {
+        float: left;
+        max-width: 60px;
+        width: 100%;
+        margin-right: 20px;
+        border-radius: 50%;
+      }
+
+      .container img.right {
+        float: right;
+        margin-left: 20px;
+        margin-right: 0;
+      }
+
+      .time-right {
+        float: right;
+        color: #aaa;
+      }
+
+      .time-left {
+        float: left;
+        color: #999;
+      }
+      .hide {
+        display: none;
+      }
+      .join-room-class > p {
+        display: none;
+      }
+
+      .join-room-class {
+        background-color: #673ab7;
+        color: white;
+      }
+      div.sendbox {
+        position: relative;
+      }
+
+      input[type="text"] {
+        width: 75%;
+        padding: 8.3px;
+      }
+      input[type="submit"] {
+        width: 18%;
+        background: #673ab7;
+        color: white;
+        border: 2px solid #dedede;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+      }
+    </style>
+    <script src="/javascripts/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      var chatRoomId = `<%= roomid%>`;
+      var chatRoomName = `<%= roomname%>`;
+    </script>
+  </head>
+  <body>
+    <h2>
+      Chats
+      <!--copy room link to dashbaoard-->
+      <span
+        id="share-link-button"
+        style="
+          float: right;
+          font-size: 20px;
+          text-decoration: none;
+          font-weight: 100;
+          padding: 5px 20px;
+          border: 2px solid #dedede;
+          background-color: #f1f1f1;
+          border-radius: 5px;
+          cursor: pointer;
+        "
+      >
+        <a
+          onclick="copyLinkToClipBoard()"
+          style="text-decoration: none; color: #673ab7"
+        >
+          Share your Room link!</a
+        >
+      </span>
+    </h2>
+    <div id="messageBox"></div>
+    <!--Send message box-->
+    <div calss="sendbox">
+      <input type="text" id="messageInput" value="" class="form_input" />
+      <input
+        type="submit"
+        value="Send"
+        onclick="sendMessage()"
+        class="form_submit"
+      />
+    </div>
+
+    <script>
+      //this message copies the link to current chatroom to the clipboard
+      function copyLinkToClipBoard() {
+        let input = document.createElement("textarea");
+        let link = `${window.location.origin}/chats/launchChat/${chatRoomId}/${chatRoomName}`;
+        console.log(
+          `${window.location.origin}/chats/launchChat/${chatRoomId}/${chatRoomName}`
+        );
+        input.innerHTML = link;
+        document.body.appendChild(input);
+        input.select();
+        let result = document.execCommand("copy");
+        document.body.removeChild(input);
+        alert(
+          "Link copied to Clip board. You can share it with your friend. Happy Chatting!!!"
+        );
+        return result;
+      }
+
+      ////this simply displays the message from other user or you and other system reated mesage on the chat box
+      function addMessageBox(msgtext, msgtime, msgtype) {
+        let messagetheme = "",
+          photoclass = "left",
+          photourl = "/images/chat1.png",
+          timeclass = "time-right",
+          hideClass = "";
+        //the message you have sned
+        if (msgtype == "self") {
+          if (document.querySelectorAll(".no-message-class")[0]) {
+            document.querySelectorAll(".no-message-class")[0].remove();
+          }
+          messagetheme = "darker";
+          photoclass = "right";
+          photourl = "/images/chat2.png";
+          timeclass = "time-left";
+        } else if (msgtype == "user") {
+          //the message form other user
+          if (document.querySelectorAll(".no-message-class")[0]) {
+            document.querySelectorAll(".no-message-class")[0].remove();
+          }
+          messagetheme = "";
+          photoclass = "left";
+          photourl = "/images/chat1.png";
+          timeclass = "time-right";
+        } else if (msgtype == "joinroom") {
+          //acknowledgemne for joing room
+          messagetheme = "join-room-class";
+          photoclass = "hide";
+          photourl = "";
+          timeclass = "hide";
+          hideClass = "hide";
+        } else {
+          //no mesage in the room message
+          messagetheme = "no-message-class";
+          photoclass = "hide";
+          photourl = "";
+          timeclass = "hide";
+        }
+        console.log(`<p class="${hideClass}">${msgtext}</p>`);
+        document.getElementById("messageBox").innerHTML += `
+        <div class="container ${messagetheme}">
+        <img src="${photourl}" alt="Avatartest" class="${photoclass}" style="width:100%;">
+        <p class="${hideClass}">${msgtext}</p>
+        <span class="${timeclass}">${msgtime}</span>
+        </div>`;
+      }
+
+      window.onload = function () {
+        //amek the request to join room
+        console.log("Room Join request");
+        socket.emit(
+          "Join Room",
+          JSON.stringify({ roomid: chatRoomId, roomname: chatRoomName })
+        );
+      };
+      //after joining room, ask for the previous chat on tehe room
+      socket.on("Room Joined", () => {
+        console.log("Room Join acknowledged");
+        //display jined room int he message box
+        addMessageBox(
+          "<center>Welcome to Chat Room <b>" +
+            chatRoomName +
+            "</b> (" +
+            chatRoomId +
+            ") !!</center>",
+          "",
+          "joinroom"
+        );
+        console.log("Get old message");
+        socket.emit("Request For Old Message", {
+          socketid: socket.id,
+          roomid: chatRoomId,
+        });
+      });
+      //recieved the previoss message in the room display it
+      socket.on("Load Previous Messages", (data) => {
+        console.log("Got old message", socket.id);
+        console.log(JSON.parse(data));
+        let messageJson = JSON.parse(data);
+        currentMsg = {};
+        let msgtemplatebox = document
+          .getElementById("messageBox")
+          .innerHTML.trim();
+
+        if (
+          (msgtemplatebox.match(/container/g) || []).length == 1 &&
+          messageJson.length == 0
+        ) {
+          addMessageBox(
+            "<center>Currently there are no messages to view</center>",
+            "",
+            "admin"
+          );
+        }
+        for (let counter = 0; counter < messageJson.length; counter++) {
+          console.log(messageJson[counter]);
+          currentMsg = JSON.parse(messageJson[counter]);
+          addMessageBox(currentMsg.msgtext, currentMsg.msgtime, "user");
+        }
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      //send the typed message
+      function sendMessage() {
+        let msgtext = document.getElementById("messageInput").value;
+        let dt = new Date(),
+          msgtime;
+        msgtime = dt.getHours() + ":" + dt.getMinutes();
+        if (msgtext != "") {
+          //display the message on the box
+          addMessageBox(msgtext, msgtime, "self");
+          //inform socket to store and display message to other users
+          socket.emit(
+            "User to Server",
+            JSON.stringify({
+              msgtext: msgtext,
+              msgtime: msgtime,
+              roomid: chatRoomId,
+              roomname: chatRoomName,
+            })
+          );
+
+          document.getElementById("messageInput").value = "";
+          window.scrollTo(0, document.body.scrollHeight);
+        } else {
+          alert(`You can't send blank message`);
+        }
+      }
+
+      //this event is recieved when other user in room send messages
+      socket.on("Server to User", (data) => {
+        // alert(data);
+        let usermsg = JSON.parse(data);
+        addMessageBox(usermsg.msgtext, usermsg.msgtime, "user");
+      });
+    </script>
+  </body>
+</html>

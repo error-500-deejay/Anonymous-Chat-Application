@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!-- this page is the entry page for the chat applictaion, whwerein user either enter exisitng room or makesa a new room-->
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-top: 6px;
+        margin-bottom: 16px;
+        resize: vertical;
+      }
+
+      input[type="submit"] {
+        width: 18%;
+        background: #673ab7;
+        color: white;
+        border: 2px solid #dedede;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+        cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+        background-color: black;
+      }
+
+      .container {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+        margin: 2% 15%;
+      }
+    </style>
+  </head>
+  <body>
+    <h3
+      style="
+        border: 2px solid #dedede;
+        background-color: #673ab7;
+        text-align: center;
+        color: white;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 0% 15%;
+      "
+    >
+      Join Chat
+    </h3>
+
+    <div class="container">
+      <form method="post" id="theForm" action="/chats">
+        <!--Join existing room id-->
+        <label for="fname">Join Room (enter room id)</label>
+        <input
+          type="number"
+          id="join-room-id"
+          name="join-room-id"
+          required
+          placeholder="Enter Room Id to join.."
+        />
+
+        <input type="submit" value="Join" />
+        <br /><br /><br />
+      </form>
+      <form method="post" id="createForm" action="/chats">
+        <!--Create new room ,id and name entry-->
+        <label for="lname">Create Room (enter room id)</label>
+        <input
+          type="number"
+          required
+          id="create-room-id"
+          name="join-room-id"
+          placeholder="Enter Room Id to create.."
+        />
+        <input
+          type="text"
+          required
+          id="create-room-name"
+          name="join-room-name"
+          placeholder="Enter Room Name to create.."
+        />
+
+        <input type="submit" value="Create" />
+        <br /><br /><br />
+      </form>
+    </div>
+  </body>
+</html>
