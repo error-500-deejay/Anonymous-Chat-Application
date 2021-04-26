@@ -1,5 +1,6 @@
-# Anonymous Chat Application
 # Simple Chat App with Socket.io (No DB connections required) 
+![Dashboard](https://raw.githubusercontent.com/error-500-deejay/Anonymous-Chat-Application/main/screenshots/MessageBox.PNG)
+# Anonymous Chat Application
 _A simple real-time chat application made using Socket.io, Node and HTML._
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
@@ -81,11 +82,28 @@ nodemon
     var port = normalizePort(process.env.PORT || "3000");
 > And you guessed it right. Genius! Just change 3000 to which ever port you can get free.
 
+## Diagrams
+### How Sockets are actually emiting and listening in a single picture
+![](https://github.com/error-500-deejay/Anonymous-Chat-Application/blob/main/explanation-diagrams/SocketConnections.png)
+### Node Travel Iternerary
+![](https://github.com/error-500-deejay/Anonymous-Chat-Application/blob/main/explanation-diagrams/routing.png)
+
+## Gallery 
+### Entry Dashboard
+![](https://github.com/error-500-deejay/Anonymous-Chat-Application/blob/main/screenshots/MainPAge.PNG)
+### Chat Room
+![](https://github.com/error-500-deejay/Anonymous-Chat-Application/blob/main/screenshots/initialMsgBox.PNG)
+### Chatting...
+![](https://github.com/error-500-deejay/Anonymous-Chat-Application/blob/main/screenshots/MessageBox.PNG)
+### Unauthorised Access without Room credentials (Just Refresh the Chat room page)
+![](https://github.com/error-500-deejay/Anonymous-Chat-Application/blob/main/screenshots/UnauthorisedAcess.PNG)
+
+
 ## Development
 
 Want to contribute? Great!
 Just Fork it 
-Else get in contact with me at [E-mail](gadakh.dhananjay3@gmail.com)
+Else get in contact with me at [My Mail](mailto:gadakh.dhananjay3@gmail.com?subject=Contact%20for%20Contirbution%20to%20Chat%20app%20on%20Github)
 
 ### Give it a 🌟 to show your support 😃😃
 ### And of course, feel free for any kind of contribution.
